@@ -1,0 +1,98 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: frontend
+spec:
+  host: frontend
+  subsets:
+  - name: v1
+    labels:
+      app: frontend
+      version: v1
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+spec:
+  hosts:
+  - frontend-CLUSTER.apps.DOMAIN
+  gateways:
+  - NAMESPACE/frontend-gateway
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+    tls:
+      mode: DISABLE #ISTIO_MUTUAL
+  http:
+  - route:
+    - destination:
+        port:
+          number: 8080
+        host: frontend.NAMESPACE.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: backend
+spec:
+  host: backend
+  subsets:
+  - name: v1
+    labels:
+      app: backend
+      version: v1
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend
+spec:
+  hosts:
+  - backend.NAMESPACE.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+    tls:
+      mode: DISABLE #ISTIO_MUTUAL
+  http:
+  - route:
+    - destination:
+        host: backend
+        subset: v1
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: frontend-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - 'frontend-CLUSTER.apps.DOMAIN'
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-svc-https
+spec:
+  hosts:
+  - httpbin.org
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: TLS
+  resolution: DNS

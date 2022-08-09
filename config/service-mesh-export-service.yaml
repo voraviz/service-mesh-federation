@@ -1,0 +1,14 @@
+kind: ExportedServiceSet
+apiVersion: federation.maistra.io/v1
+metadata:
+  name: prod-mesh
+  namespace: audit-cluster
+spec:
+  exportRules:  
+  - type: NameSelector
+    nameSelector:
+      namespace: audit-app
+      name: audit
+      alias:
+        namespace: audit-app
+        name: audit

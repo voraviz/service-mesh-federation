@@ -1,0 +1,22 @@
+kind: ServiceMeshPeer
+apiVersion: federation.maistra.io/v1
+metadata:
+ name: dc2-mesh
+ namespace: dc1-istio-system
+spec:
+ remote:
+   addresses:
+   - ADDRESS
+   discoveryPort: DISCOVERY_PORT
+   servicePort: SERVICE_PORT
+ gateways:
+   ingress:
+     name: dc2-mesh-ingress
+   egress:
+     name: dc2-mesh-egress
+ security:
+   trustDomain: dc2-mesh.local
+   clientID: dc2-mesh.local/ns/dc2-istio-system/sa/dc1-mesh-egress-service-account
+   certificateChain:
+     kind: ConfigMap
+     name: dc2-mesh-ca-root-cert

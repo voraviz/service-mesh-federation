@@ -1,0 +1,24 @@
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: audit
+spec:
+  host: audit.audit-app.svc.cluster.local
+  subsets:
+    - labels:
+        version: v1
+      name: v1
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: audit
+spec:
+  hosts:
+    - audit.audit-app.svc.cluster.local
+  http:
+    - route:
+        - destination:
+            host: audit.audit-app.svc.cluster.local
+            subset: v1
+          weight: 100

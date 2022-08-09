@@ -1,0 +1,12 @@
+kind: ImportedServiceSet
+apiVersion: federation.maistra.io/v1
+metadata:
+  name: audit-mesh
+  namespace: prod-cluster
+spec:
+  importRules:
+  - type: NameSelector
+    nameSelector:
+      importAsLocal: false
+      namespace: audit-app
+      name: audit

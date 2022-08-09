@@ -1,0 +1,22 @@
+kind: ServiceMeshPeer
+apiVersion: federation.maistra.io/v1
+metadata:
+ name: audit-mesh
+ namespace: prod-cluster
+spec:
+ remote:
+   addresses:
+   - prod-mesh-ingress.audit-cluster.svc.cluster.local
+   discoveryPort: 8188
+   servicePort: 15443
+ gateways:
+   ingress:
+     name: audit-mesh-ingress
+   egress:
+     name: audit-mesh-egress
+ security:
+   trustDomain: audit-mesh.local
+   clientID: audit-mesh.local/ns/audit-cluster/sa/prod-mesh-egress-service-account
+   certificateChain:
+     kind: ConfigMap
+     name: audit-mesh-ca-root-cert
