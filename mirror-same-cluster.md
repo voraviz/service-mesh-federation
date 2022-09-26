@@ -17,12 +17,13 @@
   ```bash
   oc apply -f config/ossm-sub.yaml
   sleep 10
-  oc wait --for condition=established --timeout=180s \
+  oc wait --for condition=established --timeout=300s \
   crd/servicemeshcontrolplanes.maistra.io \
   crd/servicemeshmemberrolls.maistra.io \
   crd/servicemeshmembers.maistra.io \
   crd/kialis.kiali.io \
   crd/jaegers.jaegertracing.io
+  printf "\n***** Display Operator Version *****\n"
   oc get csv
   ```
 
@@ -34,10 +35,13 @@
   customresourcedefinition.apiextensions.k8s.io/servicemeshmembers.maistra.io condition met
   customresourcedefinition.apiextensions.k8s.io/kialis.kiali.io condition met
   customresourcedefinition.apiextensions.k8s.io/jaegers.jaegertracing.io condition met
-  NAME                                     DISPLAY                                          VERSION                 REPLACES                     PHASE
-  jaeger-operator.v1.30.1-0.1648511826.p   Red Hat OpenShift distributed tracing platform   1.30.1+0.1648511826.p                                Succeeded
-  kiali-operator.v1.36.8                   Kiali Operator                                   1.36.8                  kiali-operator.v1.36.7       Succeeded
-  servicemeshoperator.v2.1.2               Red Hat OpenShift Service Mesh                   2.1.2-0                 servicemeshoperator.v2.1.1   Succeeded
+  
+  ***** Display Operator Version *****
+
+  NAME                         DISPLAY                                          VERSION    REPLACES                     PHASE
+  jaeger-operator.v1.34.1-5    Red Hat OpenShift distributed tracing platform   1.34.1-5   jaeger-operator.v1.30.2      Succeeded
+  kiali-operator.v1.48.2       Kiali Operator                                   1.48.2     kiali-operator.v1.48.1       Succeeded
+  servicemeshoperator.v2.2.1   Red Hat OpenShift Service Mesh                   2.2.1-0    servicemeshoperator.v2.2.0   Succeeded
   ```
 
 ### Production Cluster
@@ -59,7 +63,7 @@
     Wait for ServiceMeshControlPlane creation for maximum of 3 minutes ...
     servicemeshcontrolplane.maistra.io/prod-mesh condition met
     NAME         READY   STATUS            PROFILES      VERSION   AGE
-    prod-mesh    10/10   ComponentsReady   ["default"]    2.1.2    55s
+    prod-mesh    10/10   ComponentsReady   ["default"]    2.1.4    55s
     ```
     
 - Create namespace for application, join namespace to control plane
@@ -366,4 +370,9 @@
 
   ![](images/audit-graph-mirror.png)
 
-- 
+
+
+Error
+Trust domain audit-mesh.local from principal audit-mesh.local/ns/audit-cluster/sa/prod-mesh-egress-service-account does not match the current trust domain or its aliases
+
+Trust domain prod-mesh.local from principal prod-mesh.local/ns/prod-cluster/sa/audit-mesh-egress-service-account does not match the current trust domain or its aliases
