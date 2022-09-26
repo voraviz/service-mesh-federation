@@ -16,7 +16,7 @@ spec:
      name: audit-mesh-egress
  security:
    trustDomain: audit-mesh.local
-   clientID: audit-mesh.local/ns/audit-cluster/sa/prod-mesh-egress-service-account
+   clientID: audit-mesh.local/ns/audit-cluster/sa/audit-mesh-egress-service-account
    certificateChain:
      kind: ConfigMap
      name: audit-mesh-ca-root-cert
