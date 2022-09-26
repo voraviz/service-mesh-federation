@@ -11,6 +11,9 @@
     - [Mirror traffic to Audit Cluster](#mirror-traffic-to-audit-cluster)
 
 ## Setup
+
+run all-in-one script [setup-mirror.sh](setup-mirror.sh)
+
 ### Prerequisites
 - Install Operators
   
