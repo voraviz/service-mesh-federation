@@ -19,7 +19,9 @@ function check_operator(){
       fi
    done
 }
-oc apply -f config/kiali-operator.yaml
+# oc apply -f config/kiali-operator.yaml
+echo "Wait for 60 sec..."
+sleep 60
 check_operator $(oc get csv -n default | grep kiali | awk '{print $1}')
 check_operator $(oc get csv -n default | grep jaeger | awk '{print $1}')
 check_operator $(oc get csv -n default | grep servicemeshoperator | awk '{print $1}')
@@ -55,7 +57,7 @@ echo "Setup prod-cluster"
     FRONTEND_URL=$(oc get route $FRONTEND_ROUTE -n prod-cluster -o jsonpath='{.spec.host}')
     echo "\n************** You can access frontend app at http://$FRONTEND_URL **************\n"
     curl -v $FRONTEND_URL
-echo "Setup audit-cluster"
+echo "\nSetup audit-cluster\n"
     oc new-project audit-cluster
     oc apply -f config/smcp-audit-cluster.yaml
     echo "Wait for ServiceMeshControlPlane creation for maximum of 3 minutes ..."
@@ -74,12 +76,14 @@ echo "Create Root CA of prod-mesh in audit-mesh"
     PROD_MESH_CERT=$(oc get configmap -n prod-cluster istio-ca-root-cert -o jsonpath='{.data.root-cert\.pem}')
     echo $PROD_MESH_CERT > prod-mesh-cert.pem
     oc create configmap  prod-mesh-ca-root-cert -n audit-cluster  --from-file=root-cert.pem=prod-mesh-cert.pem
+    #sed "s:{{PROD_MESH_CERT}}:$PROD_MESH_CERT:g" config/prod-mesh-ca-root-cert.yaml|oc apply -f -
     rm -f prod-mesh-cert.pem
     oc get configmap prod-mesh-ca-root-cert -n audit-cluster -o jsonpath='{.data.root-cert\.pem}'
 echo "Create Root CA of audit-mesh in prod-mesh"
     AUDIT_MESH_CERT=$(oc get configmap -n audit-cluster istio-ca-root-cert -o jsonpath='{.data.root-cert\.pem}')
     echo $AUDIT_MESH_CERT > audit-mesh-cert.pem
     oc create configmap  audit-mesh-ca-root-cert -n prod-cluster  --from-file=root-cert.pem=audit-mesh-cert.pem
+    #sed "s:{{AUDIT_MESH_CERT}}:AUDIT_MESH_CERT:g" config/audit-mesh-ca-root-cert.yaml|oc apply -f -
     rm -f audit-mesh-cert.pem
     oc get configmap audit-mesh-ca-root-cert -n prod-cluster -o jsonpath='{.data.root-cert\.pem}'
 echo "Configure Service Mesh Peer"
