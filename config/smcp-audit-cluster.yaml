@@ -8,7 +8,7 @@ spec:
   cluster:
     name: audit-mesh
     # network: audit-mesh-network
-  version: v2.1  # Change this to match your OSSM Version
+  version: v2.2  # Change this to match your OSSM Version
   tracing:
     sampling: 10000 # scaled integer, 0-100% in 0.01% increments, i.e. 1=.001%, 100=1%, 10000=100%
     type: Jaeger
