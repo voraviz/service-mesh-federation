@@ -375,7 +375,3 @@ run all-in-one script [setup-mirror.sh](setup-mirror.sh)
 
 
 
-Error
-Trust domain audit-mesh.local from principal audit-mesh.local/ns/audit-cluster/sa/prod-mesh-egress-service-account does not match the current trust domain or its aliases
-
-Trust domain prod-mesh.local from principal prod-mesh.local/ns/prod-cluster/sa/audit-mesh-egress-service-account does not match the current trust domain or its aliases
