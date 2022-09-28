@@ -5,6 +5,8 @@ if [ "$OSSM_OPERATOR" = "" ];
 then
    echo "Install OSSM operators"
    oc apply -f config/ossm-sub.yaml
+   echo "Wait for 20 sec..."
+   sleep 20
 fi
 function check_operator(){
    STATUS=""
@@ -20,8 +22,7 @@ function check_operator(){
    done
 }
 # oc apply -f config/kiali-operator.yaml
-echo "Wait for 60 sec..."
-sleep 60
+
 check_operator $(oc get csv -n default | grep kiali | awk '{print $1}')
 check_operator $(oc get csv -n default | grep jaeger | awk '{print $1}')
 check_operator $(oc get csv -n default | grep servicemeshoperator | awk '{print $1}')
@@ -31,6 +32,7 @@ crd/servicemeshmemberrolls.maistra.io \
 crd/servicemeshmembers.maistra.io \
 crd/kialis.kiali.io \
 crd/jaegers.jaegertracing.io
+echo "OSSM and related operators installed sucessfully"
 echo "Setup prod-cluster"
     oc new-project prod-cluster
     oc apply -f config/smcp-prod-cluster.yaml -n prod-cluster
@@ -87,7 +89,7 @@ echo "Create Root CA of audit-mesh in prod-mesh"
     rm -f audit-mesh-cert.pem
     oc get configmap audit-mesh-ca-root-cert -n prod-cluster -o jsonpath='{.data.root-cert\.pem}'
 echo "Configure Service Mesh Peer"
-oc apply -f config/service-mesh-peer-prod.yaml
+    oc apply -f config/service-mesh-peer-prod.yaml
     oc apply -f  config/service-mesh-peer-audit.yaml 
     AUDIT_STATUS=$(oc get servicemeshpeer prod-mesh -o jsonpath='{.status.discoveryStatus}' -n audit-cluster | awk -F':' '{print $1}' | sed s/\{//)
     PROD_STATUS=$(oc get servicemeshpeer audit-mesh -o jsonpath='{.status.discoveryStatus}' -n prod-cluster | awk -F':' '{print $1}' | sed s/\{//)
