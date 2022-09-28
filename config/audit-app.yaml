@@ -42,7 +42,7 @@ spec:
             memory: 120Mi
         env:
           - name: APP_BACKEND
-            value: http://localhost:8080/version
+            value: https://httpbin.org/status/201
           - name: APP_VERSION
             value: v3
           - name: quarkus.log.console.color
