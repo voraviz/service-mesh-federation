@@ -16,7 +16,7 @@ spec:
      name: prod-mesh-egress
  security:
    trustDomain: prod-mesh.local
-   clientID: prod-mesh.local/ns/prod-cluster/sa/prod-mesh-egress-service-account
+   clientID: prod-mesh.local/ns/prod-cluster/sa/audit-mesh-egress-service-account
    certificateChain:
      kind: ConfigMap
      name: prod-mesh-ca-root-cert
