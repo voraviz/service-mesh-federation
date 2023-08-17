@@ -9,6 +9,7 @@
     - [Service Mesh Peering](#service-mesh-peering)
     - [Export/Import Services](#exportimport-services)
     - [Mirror traffic to Audit Cluster](#mirror-traffic-to-audit-cluster)
+  - [Test with service outside mesh](#test-with-service-outside-mesh)
 
 ## Setup
 
@@ -373,5 +374,66 @@ run all-in-one script [setup-mirror.sh](setup-mirror.sh)
 
   ![](images/audit-graph-mirror.png)
 
+## Test with service outside mesh
 
+Verify that pod outside both meshes cannot access service in meshes
+
+- Create new project
+  
+  ```bash
+  oc new-project demo
+  ```
+
+- Deploy audit app (or any deployment with curl)
+
+  ```bash
+  oc create -f config/audit-app.yaml
+  ```
+
+- Try to connect to audit service in audit-app project
+  
+  ```bash
+  TEST_POD=$(oc get po --no-headers -o 'custom-columns=Name:.metadata.name' | head -n 1)
+  oc exec $TEST_POD -- curl -s -v http://audit.audit-app.svc:8080
+  ```
+
+  Output
+
+  ```bash
+  * Rebuilt URL to: http://audit.audit-app.svc:8080/
+  *   Trying 172.30.93.218...
+  * TCP_NODELAY set
+  * Connected to audit.audit-app.svc (172.30.93.218) port 8080 (#0)
+  > GET / HTTP/1.1
+  > Host: audit.audit-app.svc:8080
+  > User-Agent: curl/7.61.1
+  > Accept: */*
+  >
+  * Recv failure: Connection reset by peer
+  * Closing connection 0
+  command terminated with exit code 56
+  ```
+
+- Try to connect to backend service in prod-app project
+  
+  ```bash
+  oc exec $TEST_POD -- curl -s -v http://backend.prod-app.svc:8080
+  ```
+
+  Output
+
+  ```bash
+  * Rebuilt URL to: http://backend.prod-app.svc:8080/
+  *   Trying 172.30.191.238...
+  * TCP_NODELAY set
+  * Connected to backend.prod-app.svc (172.30.191.238) port 8080 (#0)
+  > GET / HTTP/1.1
+  > Host: backend.prod-app.svc:8080
+  > User-Agent: curl/7.61.1
+  > Accept: */*
+  >
+  * Recv failure: Connection reset by peer
+  * Closing connection 0
+  command terminated with exit code 56
+  ```
 
