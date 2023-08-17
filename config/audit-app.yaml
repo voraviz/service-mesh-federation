@@ -42,15 +42,18 @@ spec:
             memory: 120Mi
         env:
           - name: APP_BACKEND
-            value: https://httpbin.org/status/201
+            value: https://mockbin.org/status/200
           - name: APP_VERSION
             value: v3
           - name: quarkus.log.console.color
             value: 'false'
         securityContext:
+          seccompProfile: #"RuntimeDefault" or "Localhost"
+            type: RuntimeDefault
           allowPrivilegeEscalation: false
           runAsNonRoot: true
-          drop: ALL
+          capabilities:
+            drop: ["ALL"]
           readOnlyRootFilesystem: false
         ports:
         - containerPort: 8080

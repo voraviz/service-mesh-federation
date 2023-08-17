@@ -25,11 +25,10 @@ spec:
     trust:
       domain: prod-mesh.local
     dataPlane:
-      mtls: false
-      automtls: false
+      mtls: true
+      automtls: true
     controlPlane:
-      mtls: false
-      automtls: false
+      mtls: true
   policy:
     type: Istiod # or Mixer or Remote, Mixer is default for pre v2.0
   telemetry:

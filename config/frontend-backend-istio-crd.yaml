@@ -89,7 +89,7 @@ metadata:
   name: external-svc-https
 spec:
   hosts:
-  - httpbin.org
+  - mockbin.org
   location: MESH_EXTERNAL
   ports:
   - number: 443
