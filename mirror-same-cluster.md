@@ -13,7 +13,7 @@
 
 ## Setup
 
-run all-in-one script [setup-mirror.sh](setup-mirror.sh)
+<!-- run all-in-one script [setup-mirror.sh](setup-mirror.sh) -->
 
 ### Prerequisites
 - Install Operators
